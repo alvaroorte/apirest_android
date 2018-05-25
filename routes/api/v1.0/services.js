@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Neighborhood = require("../../../database/collections/neighborhood");
 var Home = require("../../../database/collections/home");
+var Contact=require("../../../database/collections/contact");
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -87,6 +88,39 @@ router.get('/neighborhood', (req, res, next) => {
 })
 });
 
+router.post('/contact', (req, res) => {
+  if (req.body.email == "" && req.body.phone == "") {
+      res.status(400).json({
+        "msn" : "formato incorrecto"
+      });
+      return;
+    }
+    var contact = {
+      name : req.body.name,
+    lastname : req.body.lastname,
+    phone :req.body.phone,
+    phone2 : req.body.phone2,
+    movil : req.body.movil,
+    email : req.body.email,
+    city : req.body.city,
+    photo : req.body.photo,
+    shortphone : req.body.shortphone
+    };
+    var contactData = new Contact(contact);
+  
+    contactData.save().then( () => {
+      //content-type
+      res.status(200).json({
+        "msn" : "Contacto Registrado con exito "
+      });
+  });
+});
+
+router.get('/contact', (req, res, next) => {
+  Contact.find({}).exec( (error, docs) => {
+  res.status(200).json(docs);
+})
+});
 router.get('/home', (req, res, next) => {
 
 });
